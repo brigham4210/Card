@@ -33,109 +33,82 @@
         }
 
         .row img {
-            height: 180px;
+            height: 480px;
             width: auto;
             object-fit: contain;
             background: white;
-            border-radius: 5px;
+            border-radius: 15px;
+            border: 5px solid silver;
         }
     </style>
 </head>
 
 <body>
 
-    <input
-        type="file"
-        id="folderInput"
-        webkitdirectory
-        multiple
-    >
-
     <div id="gallery"></div>
 
     <script>
-        const folderInput = document.getElementById("folderInput");
+        // Add a folder name and its image paths here to display a new row
+        const folders = {
+            "Jeremy Lin": [
+                "Jeremy Lin/Slide1.jpeg",
+                "Jeremy Lin/Slide2.jpeg",
+                "Jeremy Lin/Slide3.jpeg",
+                "Jeremy Lin/Slide4.jpeg",
+                "Jeremy Lin/Slide5.jpeg",
+                "Jeremy Lin/Slide6.jpeg",
+                "Jeremy Lin/Slide7.jpeg",
+                "Jeremy Lin/Slide8.jpeg",
+                "Jeremy Lin/Slide9.jpeg",
+                "Jeremy Lin/Slide10.jpeg",
+                "Jeremy Lin/Slide11.jpeg",
+                "Jeremy Lin/Slide12.jpeg",
+                "Jeremy Lin/Slide13.jpeg",
+                "Jeremy Lin/Slide14.jpeg"
+            ],
+            "Grim Reapers": [
+                "Grim Reapers/Slide1.jpeg",
+                "Grim Reapers/Slide2.jpeg",
+                "Grim Reapers/Slide3.jpeg",
+                "Grim Reapers/Slide4.jpeg",
+                "Grim Reapers/Slide5.jpeg",
+                "Grim Reapers/Slide6.jpeg",
+                "Grim Reapers/Slide7.jpeg",
+                "Grim Reapers/Slide8.jpeg",
+                "Grim Reapers/Slide9.jpeg"
+            ]
+        };
+
         const gallery = document.getElementById("gallery");
 
-        folderInput.addEventListener("change", () => {
+        // Create one row per folder
+        for (const folderName of Object.keys(folders)) {
 
-            gallery.innerHTML = "";
+            const folder = document.createElement("div");
+            folder.className = "folder";
 
-            const folders = {};
+            const title = document.createElement("h2");
+            title.textContent = folderName;
 
-            // Look at every file in every selected folder
-            for (const file of folderInput.files) {
+            const row = document.createElement("div");
+            row.className = "row";
 
-                // Only use images
-                if (!file.type.startsWith("image/")) {
-                    continue;
-                }
+            for (const path of folders[folderName]) {
 
-                // Example:
-                // cards/Pokemon/fire.png
-                // becomes:
-                // cards/Pokemon
-                const parts = file.webkitRelativePath.split("/");
-                parts.pop();
+                const img = document.createElement("img");
 
-                const folderName = parts.join("/");
+                img.src = path;
+                img.alt = path;
+                img.title = path;
 
-                if (!folders[folderName]) {
-                    folders[folderName] = [];
-                }
-
-                folders[folderName].push(file);
+                row.appendChild(img);
             }
 
-            // Sort folders
-            const folderNames = Object.keys(folders).sort(
-                (a, b) =>
-                    a.localeCompare(
-                        b,
-                        undefined,
-                        { numeric: true }
-                    )
-            );
+            folder.appendChild(title);
+            folder.appendChild(row);
 
-            // Create one row per folder
-            for (const folderName of folderNames) {
-
-                const folder = document.createElement("div");
-                folder.className = "folder";
-
-                const title = document.createElement("h2");
-                title.textContent = folderName;
-
-                const row = document.createElement("div");
-                row.className = "row";
-
-                // Sort images by filename
-                folders[folderName].sort(
-                    (a, b) =>
-                        a.name.localeCompare(
-                            b.name,
-                            undefined,
-                            { numeric: true }
-                        )
-                );
-
-                for (const file of folders[folderName]) {
-
-                    const img = document.createElement("img");
-
-                    img.src = URL.createObjectURL(file);
-                    img.alt = file.name;
-                    img.title = file.name;
-
-                    row.appendChild(img);
-                }
-
-                folder.appendChild(title);
-                folder.appendChild(row);
-
-                gallery.appendChild(folder);
-            }
-        });
+            gallery.appendChild(folder);
+        }
     </script>
 
 </body>
